@@ -1,4 +1,6 @@
-import { sendResponse } from "../utils/response";
+import axios from "axios"
+
+
 
 export const getLanguageID = (language)=>{
     const languageMap = {
@@ -41,17 +43,17 @@ export const pollBatchResults = async (tokens, maxAttempts = 10) => {
         }
 
         console.log("Polling timed out after multiple attempts.");
-        return sendResponse(res, 500, "Error in submission, polling timeout");
 
     } catch (error) {
         console.error("Error polling batch results:", error);
-        sendResponse(res, 500,"Error polling batch results")
+        throw new Error("Error polling batch results: " + error.message);
+
     }
 }
 
 
 export const submitBatch = async (submissions)=>{
-    const {data} = await axios.post(`${process.env.JUDGE0_API_URL}/submissions/batch?base64_encoded=false`)
+    const {data} = await axios.post(`${process.env.JUDGE0_API_URL}/submissions/batch?base64_encoded=false`,{ submissions })
 
     console.log("submission Results ", data);
     return data

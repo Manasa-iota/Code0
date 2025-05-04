@@ -62,6 +62,7 @@ model Problem {
   user User @relation(fields: [userId], references: [id], onDelete: SetNull)
   submission Submission[]
   problemPlaylists ProblemInPlaylist[]
+  problemSolved ProblemSolved[]
 }
 
 model Submission {
@@ -134,7 +135,7 @@ model Playlist{
 
   user User @relation(fields: [userId],references:[id],onDelete:Cascade)
 
-  @unique([name,userId])
+  @@unique([name,userId])
 
 
 }

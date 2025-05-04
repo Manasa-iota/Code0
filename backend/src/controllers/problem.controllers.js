@@ -1,5 +1,5 @@
-import {db} from "../libs/db.js";
-import {sendResponse} from "../utils/response.js";
+import { db } from "../libs/db.js";
+import { sendResponse } from "../utils/response.js";
 import { getLanguageID, submitBatch } from "../libs/judge0.lib.js";
 import { pollBatchResults } from "../libs/judge0.lib.js";
 
@@ -69,9 +69,86 @@ export const createProblem = async (req, res) => {
         });
 
         return sendResponse(res, 200, "Problem created successfully", problem);
-        
+
     } catch (error) {
         console.error("Error in creating problem:", error);
         return sendResponse(res, 500, "Error in creating problem");
     }
 };
+
+export const getAllProblems = async (req, res) => {
+    try {
+        const problems = await db.Problem.findMany({
+            select: {
+                id: true,
+                title: true,
+                difficulty: true,
+                tags: true
+            }
+        });
+        return sendResponse(res, 200, "Fetched all problems successfully", problems);
+    } catch (error) {
+        return sendResponse(res, 500, "Error in fetching all problems");
+    }
+};
+
+export const getProblemById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const problem = await db.Problem.findUnique({
+            where: { id }
+        });
+
+        if (!problem) {
+            return sendResponse(res, 404, "Problem not found");
+        }
+
+        return sendResponse(res, 200, "Successfully fetched the problem", problem);
+    } catch (error) {
+        return sendResponse(res, 500, "Cannot fetch the problem");
+    }
+};
+
+export const updateProblem = async (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
+
+    if (req.user.role !== "ADMIN") {
+        return sendResponse(res, 403, "Not authorized to update problem");
+    }
+
+    try {
+        const updatedProblem = await db.Problem.update({
+            where: { id },
+            data: updates,
+        });
+
+        return sendResponse(res, 200, "Problem updated successfully", updatedProblem);
+    } catch (error) {
+        return sendResponse(res, 500, "Error updating problem");
+    }
+};
+
+export const deleteProblem = async (req, res) => {
+    const { id } = req.params;
+
+    if (req.user.role !== "ADMIN") {
+        return sendResponse(res, 403, "Not authorized to delete problem");
+    }
+
+    try {
+        const problem = await db.Problem.findUnique({ where: { id } });
+
+        if (!problem) {
+            return sendResponse(res, 404, "Problem not found");
+        }
+
+        await db.Problem.delete({ where: { id } });
+
+        return sendResponse(res, 200, "Problem deleted successfully");
+    } catch (error) {
+        return sendResponse(res, 500, "Error deleting problem");
+    }
+};
+
+

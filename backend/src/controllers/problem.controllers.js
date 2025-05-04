@@ -155,24 +155,25 @@ export const getAllProblemsSolvedByUser = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        const submissions = await db.ProblemSolved.findMany({
+        const problems = await db.problem.findMany({
             where: {
-                userId
+                solvedBy: {
+                    some: {
+                        userId
+                    }
+                }
             },
-            select: {
-                problemId: true,
-            },
+            include: {
+                solvedBy: true
+            }
         });
 
-        const solvedProblemIds = [...new Set(submissions.map((s) => s.problemId))];
+        const filtered = problems.map(problem => ({
+            ...problem,
+            solvedBy: problem.solvedBy.filter(user => user.userId === userId)
+        }));
 
-        const problems = await db.Problem.findMany({
-            where: {
-                id: { in: solvedProblemIds },
-            },
-        });
-
-        return sendResponse(res, 200, "Fetched solved problems", problems);
+        return sendResponse(res, 200, "Fetched solved problems", filtered);
     } catch (error) {
         return sendResponse(res, 500, "Error fetching solved problems");
     }

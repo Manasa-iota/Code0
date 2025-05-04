@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js"
 import problemRoutes from "./routes/problem.routes.js"
+import executeRoute  from "./routes/execute-code.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -22,6 +23,7 @@ app.get("/",(req,res)=>{
 
 app.use("/api/v1/auth",authRoutes);
 app.use("/api/v1/problem",problemRoutes);
+app.use("/api/v1/execute-code",executeRoute);
 app.listen(PORT,()=>{
     console.log(`server is running on ${PORT}`);
 })

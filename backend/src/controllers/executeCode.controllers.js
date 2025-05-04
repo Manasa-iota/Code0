@@ -22,15 +22,29 @@ export const executeCode = async (req, res) => {
 
         const results = await pollBatchResults(tokens);
 
-        const testResults = results.map((result, index) => ({
-            input: stdin[index],
-            expected_output: expected_outputs[index],
-            actual_output: result.stdout?.trim(),
-            status: result.status?.description,
-            passed: result.stdout?.trim() === expected_outputs[index].trim()
-        }));
-
-        return sendResponse(res, 200, "Execution complete", { problemId, userId, testResults });
+        let allPassed = true;
+        const testResults = results.map((result, index) => {
+            const stdout = result.stdout?.trim();
+            const expected_output = expected_outputs[index]?.trim();
+            const passed = stdout === expected_output;
+    
+            if (!passed) allPassed = false;
+    
+            return {
+                testCase: index + 1,
+                passed,
+                stdout,
+                expected: expected_output,
+                stderr: result.stderr || null,
+                compiled_output: result.compiled_output || null
+            };
+        });
+    
+        return sendResponse(res, 200, "Execution complete", {
+            allPassed,
+            testResults
+        });
+    
 
     } catch (error) {
         console.error("Execution error:", error);

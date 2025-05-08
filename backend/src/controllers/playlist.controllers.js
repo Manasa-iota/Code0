@@ -95,7 +95,7 @@ export const addProblemToPlaylist = async (req, res) => {
       return sendResponse(res, 400, "Invalid or missing problemIds");
     }
 
-    const problemsInPlaylist = await db.problemInPlaylist.createMany({
+    const problemsInPlaylist = await db.ProblemInPlaylist.createMany({
       data: problemIds.map((problemId) => ({
         playlistId,
         problemId,
@@ -118,7 +118,7 @@ export const deleteProblemFromPlaylist = async (req, res) => {
       return sendResponse(res, 400, "Invalid or missing problemIds");
     }
 
-    const deletedProblem = await db.problemInPlaylist.deleteMany({
+    const deletedProblem = await db.ProblemInPlaylist.deleteMany({
       where: {
         playlistId,
         problemId: {

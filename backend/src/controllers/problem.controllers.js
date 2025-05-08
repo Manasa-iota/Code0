@@ -155,7 +155,7 @@ export const getAllProblemsSolvedByUser = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        const problems = await db.problem.findMany({
+        const problems = await db.Problem.findMany({
             where: {
                 solvedBy: {
                     some: {

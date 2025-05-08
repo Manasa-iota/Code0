@@ -1,4 +1,4 @@
-import { sendResponse } from "../utils/response";
+import { sendResponse } from "../utils/response.js";
 import { db } from "../libs/db.js";
 
 export const getAllPlaylists = async (req, res) => {

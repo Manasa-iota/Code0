@@ -28,7 +28,8 @@ app.use("/api/v1/auth",authRoutes);
 app.use("/api/v1/problem",problemRoutes);
 app.use("/api/v1/execute-code",executeRoute);
 app.use("/api/v1/playlist",playlistRoute);
-app.use("/api/notes", NoteRoute)
+app.use("/api/notes", NoteRoute);
+app.use("/api/submissions", SubmissionRoute)
 
 app.listen(PORT,()=>{
     console.log(`server is running on ${PORT}`);

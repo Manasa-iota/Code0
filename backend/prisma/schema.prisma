@@ -152,3 +152,16 @@ model ProblemInPlaylist{
   problem Problem @relation(fields:[problemId],references:[id],onDelete:Cascade)
 
 }
+
+model Note {
+  id           String     @id @default(uuid())
+  title        String?
+  content      String?
+  submissionId String     @unique
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+   @@index([submissionId])
+}

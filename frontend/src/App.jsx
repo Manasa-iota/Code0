@@ -1,37 +1,71 @@
-import { useState } from 'react'
-import {Routes, Route, Navigate} from "react-router-dom"
-import LoginPage from './page/LoginPage'
-import HomePage from './page/HomePage'
-import SignupPage from './page/SignupPage'
+import React, { useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { Loader } from "lucide-react";
 
-function App() {
+import HomePage from "./page/HomePage";
+import LoginPage from "./page/LoginPage";
+import SignUpPage from "./page/SignUpPage";
+import AddProblem from "./page/AddProblem";
+import ProblemPage from "./page/ProblemPage";
 
-  let authUser = null;
+import Layout from "./layout/Layout";
+import AdminRoute from "./components/AdminRoute";
+import { useAuthStore } from "./store/useAuthStore";
 
-  
+const App = () => {
+  const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
+
+  useEffect(() => {
+    (async () => {
+      await checkAuth();
+    })();
+  }, [checkAuth]);
+
+  if (isCheckingAuth && !authUser) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader className="size-10 animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div className='flex flex-col items-center justify-start'>
-        <Routes>
+    <div className="flex flex-col items-center justify-start">
+      <Toaster />
+
+      <Routes>
+        <Route path="/" element={<Layout />}>
           <Route
-          path='/'
-          element={authUser? <HomePage/>: <Navigate to={"/login"} />}
+            index
+            element={authUser ? <HomePage /> : <Navigate to="/login" />}
           />
+        </Route>
 
+        <Route
+          path="/login"
+          element={!authUser ? <LoginPage /> : <Navigate to="/" />}
+        />
+
+        <Route
+          path="/signup"
+          element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
+        />
+
+        <Route
+          path="/problem/:id"
+          element={authUser ? <ProblemPage /> : <Navigate to="/login" />}
+        />
+
+        <Route element={<AdminRoute />}>
           <Route
-          path='/login'
-          element={!authUser? <LoginPage/> : <Navigate to={"/"}/>}
+            path="/add-problem"
+            element={authUser ? <AddProblem /> : <Navigate to="/" />}
           />
+        </Route>
+      </Routes>
+    </div>
+  );
+};
 
-          <Route  
-          path='/signup'
-          element={<SignupPage/>}
-          />
-        </Routes>
-      </div>
-    </>
-  )
-}
-
-export default App
+export default App;

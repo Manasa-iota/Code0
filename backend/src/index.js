@@ -8,12 +8,17 @@ import problemRoutes from "./routes/problem.routes.js"
 import executeRoute  from "./routes/execute-code.routes.js";
 import playlistRoute from "./routes/playlist.routes.js";
 import NoteRoute from "./routes/note.routers.js"
+import SubmissionRoute from "./routes/submission.routes.js"
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

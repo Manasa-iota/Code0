@@ -1,6 +1,6 @@
 import expreses from "express";
 
-import { register, login, logout, me } from "../controllers/auth.controllers.js";
+import { register, login, logout, check } from "../controllers/auth.controllers.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 
@@ -12,6 +12,6 @@ authRoutes.post("/login", login);
 
 authRoutes.post("/logout", authMiddleware, logout);
 
-authRoutes.get("/me", authMiddleware, me);
+authRoutes.get("/check", authMiddleware, check);
 
 export default authRoutes;

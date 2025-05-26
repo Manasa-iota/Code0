@@ -211,7 +211,7 @@ const SignUpPage = () => {
       </div>
 
       {/* Right Side */}
-      <AuthImagePattern
+      <CodeBackground
         title="Welcome to our platform!"
         subtitle="Sign up to access our platform and start using our services."
       />

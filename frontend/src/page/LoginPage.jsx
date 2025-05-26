@@ -14,6 +14,7 @@ import {
 import { z } from "zod";
 import CodeBackground from "../components/CodeBackground";
 import { useAuthStore } from "../store/useAuthStore";
+import toast from "react-hot-toast";
 
 const LoginSchema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -35,10 +36,16 @@ const LoginPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      await login(data);
-      navigate("/dashboard"); 
+      const success = await login(data);
+      if (success) {
+        toast.success("Logged in successfully");
+        navigate("/");
+      } else {
+        toast.error("Invalid email or password");
+      }
     } catch (error) {
-      console.error("Login failed", error);
+      console.error("Login error", error);
+      toast.error("Something went wrong");
     }
   };
 
@@ -56,9 +63,7 @@ const LoginPage = () => {
             </div>
           </div>
 
-          
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-medium">Email</span>
@@ -77,11 +82,12 @@ const LoginPage = () => {
                 />
               </div>
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
-            
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-medium">Password</span>
@@ -111,11 +117,12 @@ const LoginPage = () => {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
-            
             <button
               type="submit"
               className="btn btn-primary w-full"
@@ -132,7 +139,6 @@ const LoginPage = () => {
             </button>
           </form>
 
-         
           <div className="text-center">
             <p className="text-base-content/60">
               Don't have an account?{" "}
@@ -144,7 +150,6 @@ const LoginPage = () => {
         </div>
       </div>
 
-      
       <CodeBackground
         title="Welcome back!"
         subtitle="Sign in to continue your journey with us. Don't have an account? Create one now."

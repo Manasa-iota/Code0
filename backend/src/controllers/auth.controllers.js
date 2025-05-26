@@ -115,7 +115,7 @@ export const logout = async (req, res) => {
         sendResponse(res, 500, "Error in logging out");
     }
 };
-export const me = async (req, res) => {
+export const check = async (req, res) => {
     try {
         return sendResponse(res, 200, "User authenticated successfully", { user: req.user });
     } catch (error) {

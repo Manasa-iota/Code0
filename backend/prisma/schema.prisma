@@ -86,7 +86,10 @@ model Submission {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  note Note?
 } 
+
 
 model TestCaseResult{
   id String @id @default(uuid())

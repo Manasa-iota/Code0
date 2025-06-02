@@ -86,7 +86,7 @@ export const getAllProblems = async (req, res) => {
                 tags: true
             }
         });
-        return sendResponse(res, 200, "Fetched all problems successfully", problems);
+        return sendResponse(res, 200, "Fetched all problems successfully", {problems});
     } catch (error) {
         return sendResponse(res, 500, "Error in fetching all problems");
     }
@@ -103,7 +103,7 @@ export const getProblemById = async (req, res) => {
             return sendResponse(res, 404, "Problem not found");
         }
 
-        return sendResponse(res, 200, "Successfully fetched the problem", problem);
+        return sendResponse(res, 200, "Successfully fetched the problem", {problem});
     } catch (error) {
         return sendResponse(res, 500, "Cannot fetch the problem");
     }

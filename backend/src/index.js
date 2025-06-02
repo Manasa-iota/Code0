@@ -30,7 +30,7 @@ app.get("/",(req,res)=>{
 })
 
 app.use("/api/v1/auth",authRoutes);
-app.use("/api/v1/problem",problemRoutes);
+app.use("/api/v1/problems",problemRoutes);
 app.use("/api/v1/execute-code",executeRoute);
 app.use("/api/v1/playlist",playlistRoute);
 app.use("/api/notes", NoteRoute);

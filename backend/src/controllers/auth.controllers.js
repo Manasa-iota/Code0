@@ -29,6 +29,7 @@ export const register = async (req, res) => {
                 password: hashedPassword,
                 name,
                 image: req.body?.image || DEFAULT_USER_IMAGE,
+                role: req.body?.role === "ADMIN" ? "ADMIN" : undefined,
             },
         });
 

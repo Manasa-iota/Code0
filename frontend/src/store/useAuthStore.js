@@ -34,10 +34,9 @@ export const useAuthStore = create(
             withCredentials: true,
           });
           await useAuthStore.getState().checkAuth();
-          toast.success(res?.data?.message || "Sign up successful");
+
           return true;
         } catch (error) {
-          toast.error(error.response?.data?.message || "Error signing up");
           return false;
         } finally {
           set({ isSigninUp: false });
@@ -51,10 +50,8 @@ export const useAuthStore = create(
             withCredentials: true,
           });
           await useAuthStore.getState().checkAuth();
-          toast.success(res.data.message || "Login successful");
           return true;
         } catch (error) {
-          toast.error(error.response?.data?.message || "Error logging in");
           return false;
         } finally {
           set({ isLoggingIn: false });
@@ -67,9 +64,7 @@ export const useAuthStore = create(
             withCredentials: true,
           });
           set({ authUser: null });
-          toast.success("Logout successful");
         } catch (error) {
-          toast.error("Error logging out");
         }
       },
     }),

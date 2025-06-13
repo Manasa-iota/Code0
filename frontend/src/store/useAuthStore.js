@@ -19,7 +19,7 @@ export const useAuthStore = create(
           });
           console.log("return from /check");
           console.log(res)
-          set({ authUser: res.data.user });
+          set({ authUser: res.data.data.user });
         } catch (error) {
           set({ authUser: null });
         } finally {
@@ -34,7 +34,7 @@ export const useAuthStore = create(
             withCredentials: true,
           });
           await useAuthStore.getState().checkAuth();
-          toast.success(res.data.message || "Sign up successful");
+          toast.success(res?.data?.message || "Sign up successful");
           return true;
         } catch (error) {
           toast.error(error.response?.data?.message || "Error signing up");

@@ -34,7 +34,7 @@ app.use("/api/v1/problems",problemRoutes);
 app.use("/api/v1/execute-code",executeRoute);
 app.use("/api/v1/playlist",playlistRoute);
 app.use("/api/notes", NoteRoute);
-app.use("/api/submissions", SubmissionRoute)
+app.use("/api/v1/submission", SubmissionRoute)
 
 app.listen(PORT,()=>{
     console.log(`server is running on ${PORT}`);

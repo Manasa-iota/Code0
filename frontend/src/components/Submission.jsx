@@ -2,6 +2,10 @@ import React from 'react';
 import { CheckCircle2, XCircle, Clock, MemoryStick as Memory } from 'lucide-react';
 
 const SubmissionResults = ({ submission }) => {
+  if (!submission || !submission.testCases) {
+    return <p>No submission data available.</p>;
+  }
+
   // Parse stringified arrays
   const memoryArr = JSON.parse(submission.memory || '[]');
   const timeArr = JSON.parse(submission.time || '[]');

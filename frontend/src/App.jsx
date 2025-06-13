@@ -8,7 +8,7 @@ import LoginPage from "./page/LoginPage";
 import SignUpPage from "./page/SignupPage"
 import AddProblem from "./page/AddProblem";
 import ProblemPage from "./page/ProblemPage";
-
+import ProfilePage from "./page/ProfilePage";
 
 import Layout from "./layout/Layout";
 import AdminRoute from "./components/AdminRoute";
@@ -57,6 +57,11 @@ const App = () => {
           path="/problem/:id"
           element={authUser ? <ProblemPage /> : <Navigate to="/login" />}
         />
+        <Route
+          path="/profile"
+          element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
+
 
         <Route element={<AdminRoute />}>
           <Route

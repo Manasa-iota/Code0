@@ -48,8 +48,10 @@ export const executeCode = async (req, res) => {
 
     
     return sendResponse(res, 200, "Execution complete", {
-      allPassed,
-      testResults,
+      submission: {
+        allPassed,
+        testResults,
+      },
     });
   } catch (error) {
     console.error("Execution error:", error);

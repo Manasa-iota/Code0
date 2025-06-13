@@ -68,7 +68,7 @@ export const createProblem = async (req, res) => {
             }
         });
 
-        return sendResponse(res, 200, "Problem created successfully", problem);
+        return sendResponse(res, 200, "Problem created successfully", {problem});
 
     } catch (error) {
         console.error("Error in creating problem:", error);
@@ -123,7 +123,7 @@ export const updateProblem = async (req, res) => {
             data: updates,
         });
 
-        return sendResponse(res, 200, "Problem updated successfully", updatedProblem);
+        return sendResponse(res, 200, "Problem updated successfully", {problem: updatedProblem});
     } catch (error) {
         return sendResponse(res, 500, "Error updating problem");
     }
@@ -173,7 +173,7 @@ export const getAllProblemsSolvedByUser = async (req, res) => {
             solvedBy: problem.solvedBy.filter(user => user.userId === userId)
         }));
 
-        return sendResponse(res, 200, "Fetched solved problems", filtered);
+        return sendResponse(res, 200, "Fetched solved problems", {problems:filtered});
     } catch (error) {
         return sendResponse(res, 500, "Error fetching solved problems");
     }

@@ -3,12 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { Loader } from "lucide-react";
 
-import HomePage from "./page/HomePage";
-import LoginPage from "./page/LoginPage";
-import SignUpPage from "./page/SignupPage"
-import AddProblem from "./page/AddProblem";
-import ProblemPage from "./page/ProblemPage";
-import ProfilePage from "./page/ProfilePage";
+import {HomePage, LoginPage, SignUpPage, AddProblem, ProblemPage, ProfilePage} from "./page"
+
 
 import Layout from "./layout/Layout";
 import AdminRoute from "./components/AdminRoute";

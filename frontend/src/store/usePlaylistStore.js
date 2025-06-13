@@ -60,7 +60,7 @@ export const usePlaylistStore = create((set, get) => ({
   addProblemToPlaylist: async (playlistId, problemIds) => {
     try {
       set({ isLoading: true });
-      await axiosInstance.post(`/playlist/${playlistId}/add-problem`, {
+      await axiosInstance.post(`/playlist/add-problem/${playlistId}`, {
         problemIds,
       });
 
@@ -81,7 +81,7 @@ export const usePlaylistStore = create((set, get) => ({
   removeProblemFromPlaylist: async (playlistId, problemIds) => {
     try {
       set({ isLoading: true });
-      await axiosInstance.post(`/playlist/${playlistId}/remove-problems`, {
+      await axiosInstance.post(`/playlist/delete-problem/${playlistId}`, {
         problemIds,
       });
 

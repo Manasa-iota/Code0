@@ -15,7 +15,7 @@ playlistRoute.post("/add-problem/:playlistId", authMiddleware, addProblemToPlayl
 
 playlistRoute.delete("/delete-problem/:playlistId", authMiddleware, deleteProblemFromPlaylist);
 
-playlistRoute.delete("/delete-playlist/:playlistId", authMiddleware, deletePlaylist);
+playlistRoute.delete("/:playlistId", authMiddleware, deletePlaylist);
 
 
 export default playlistRoute;

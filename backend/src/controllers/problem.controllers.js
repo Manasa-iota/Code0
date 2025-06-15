@@ -1,5 +1,5 @@
 import { db } from "../libs/db.js";
-import { sendResponse } from "../utils/response.js";
+import { sendResponse } from "../utils/apiResponse.js";
 import { getLanguageID, submitBatch } from "../libs/judge0.lib.js";
 import { pollBatchResults } from "../libs/judge0.lib.js";
 

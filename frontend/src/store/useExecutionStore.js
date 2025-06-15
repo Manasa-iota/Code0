@@ -21,7 +21,6 @@ export const useExecutionStore = create((set)=>({
             const res = await axiosInstance.post("/execute-code" , { source_code, language_id, stdin, expected_outputs, problemId });
 
             set({submission:res.data.data.submission});
-      
             toast.success(res.data.message);
         } catch (error) {
             console.log("Error executing code",error);
@@ -30,5 +29,25 @@ export const useExecutionStore = create((set)=>({
         finally{
             set({isExecuting:false});
         }
+    },
+    submitCode: async (source_code, language_id, stdin, expected_outputs, problemId) => {
+    try {
+      set({ isSubmitting: true });
+      const res = await axiosInstance.post("/submission/submit", {
+        source_code,
+        language_id,
+        stdin,
+        expected_outputs,
+        problemId,
+      });
+      
+      set({ submission: res.data.data.submission });
+      toast.success("Code submitted successfully");
+    } catch (error) {
+      console.error("Error submitting code", error);
+      toast.error("Error submitting code");
+    } finally {
+      set({ isSubmitting: false });
     }
+  },
 }))

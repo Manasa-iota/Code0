@@ -18,5 +18,4 @@ const LogoutButton = ({children})=>{
         </button>
     )
 }
-
 export default LogoutButton;

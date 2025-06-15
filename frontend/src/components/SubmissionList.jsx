@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 
 const SubmissionsList = ({ submissions, isLoading }) => {
+  console.log("submission list",submissions)
   // Helper function to safely parse JSON strings
   const safeParse = (data) => {
     try {

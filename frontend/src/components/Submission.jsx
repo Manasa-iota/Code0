@@ -2,7 +2,7 @@ import React from 'react';
 import { CheckCircle2, XCircle, Clock, MemoryStick as Memory } from 'lucide-react';
 
 const SubmissionResults = ({ submission }) => {
-  if (!submission || !submission.testCases) {
+  if (!submission || !submission.testResults) {
     return <p>No submission data available.</p>;
   }
 
@@ -19,8 +19,8 @@ const SubmissionResults = ({ submission }) => {
     .map(t => parseFloat(t)) // remove ' s' using parseFloat
     .reduce((a, b) => a + b, 0) / timeArr.length;
 
-  const passedTests = submission.testCases.filter(tc => tc.passed).length;
-  const totalTests = submission.testCases.length;
+ const passedTests = submission.testResults.filter(tc => tc.passed).length;
+ const totalTests = submission.testResults.length;
   const successRate = (passedTests / totalTests) * 100;
 
   return (
@@ -88,7 +88,7 @@ const SubmissionResults = ({ submission }) => {
                 </tr>
               </thead>
               <tbody>
-                {submission.testCases.map((testCase) => (
+                {submission.testResults.map((testCase) => (
                   <tr key={testCase.id}>
                     <td>
                       {testCase.passed ? (

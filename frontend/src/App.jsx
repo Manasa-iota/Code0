@@ -1,57 +1,93 @@
-import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
-import { Loader } from "lucide-react";
+import { ToastContainer } from "react-toastify";
 
-import Layout from "./layout/Layout";
-import AdminRoute from "./components/AdminRoute";
+import LoginAndSignup from "./pages/LoginAndSignup";
+import Home from "./pages/Home";
+import Theme from "./pages/Theme";
+import NotFoundPage from "./pages/NotFound";
+import VerifyEmail from "./pages/VerifyEmail";
+import ProblemsPage from "./pages/ProblemsPage";
+import ProblemPage from "./pages/ProblemPage";
+import PlaylistsPage from "./pages/PlaylistsPage";
+import UserProfilePage from "./pages/UserProfilePage";
+import UserDashboardPage from "./pages/UserDashboardPage";
+import SubmissionPage from "./pages/SubmissionPage";
+import AboutPage from "./pages/AboutPage";
+import SheetPage from "./pages/sheet/SheetPage";
 
-import {
-  HomePage,
-  LoginPage,
-  SignUpPage,
-  AddProblemPage,
-  ProblemDetailsPage,
-  ProfilePage
-} from "./pages"; 
+import AdminPage from "./pages/admin/AdminPage";
+import AdminSidebar from "./components/admin/Siadebar";
+import CreateProblemPage from "./pages/admin/CreateProblemPage";
+import UsersPage from "./pages/admin/UsersPage";
+import SubmissionsPage from "./pages/admin/SubmissionsPage";
+import AdminPlaylistsPage from "./pages/admin/PlaylistsPage";
+import AdminProblemsPage from "./pages/admin/ProblemsPage";
+import CreateSheetPage from "./pages/admin/CreateSheetPage";
+import SheetsPage from "./pages/admin/SheetsPages";
 
-import { useAuthStore } from "./store/useAuthStore";
+import Navbar from "./components/Navbar";
 
-const App = () => {
-  const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
+import { useThemeStore } from "./store/themeStore";
+import { useGetUserQuery } from "./querys/useUserQuery";
 
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+function App() {
+  const { theme } = useThemeStore();
+  const { data, isLoading } = useGetUserQuery({
+    onError: (err) => {
+      console.error("Auth fetch failed:", err);
+      if (err.response?.status === 401) {
+        window.location.href = "/login";
+      }
+    },
+  });
 
-  if (isCheckingAuth && !authUser) {
+  const user = data?.user;
+  const isAdmin = user?.role === "ADMIN";
+
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader className="size-10 animate-spin" />
+      <div className="w-full flex items-center justify-center h-screen" role="status" aria-busy="true">
+        <span className="loading loading-bars loading-xl" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-start">
-      <Toaster />
-
+    <div data-theme={theme} className="max-w-[2000px] mx-auto min-h-screen">
+      <ToastContainer theme={theme} position="bottom-right" />
       <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={authUser ? <HomePage /> : <Navigate to="/login" />} />
+        <Route path="/login" element={!user ? <LoginAndSignup type="login" /> : <Navigate to="/" />} />
+        <Route path="/signup" element={!user ? <LoginAndSignup type="signup" /> : <Navigate to="/" />} />
+        <Route path="/verify-email" element={!user ? <VerifyEmail /> : <Navigate to="/" />} />
+
+        <Route path="/" element={user ? <Navbar /> : <Navigate to="/login" />}>
+          <Route index element={<Home />} />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="profile" element={<UserProfilePage />} />
+          <Route path="dashboard" element={<UserDashboardPage />} />
+          <Route path="problems" element={<ProblemsPage />} />
+          <Route path="playlists/:playlistId" element={<PlaylistsPage />} />
+          <Route path="submissions/:submissionId" element={<SubmissionPage />} />
+          <Route path="sheets/:sheetId" element={<SheetPage />} />
+          <Route path="theme" element={<Theme />} />
+
+          <Route path="admin" element={isAdmin ? <AdminSidebar /> : <Navigate to="/" />}>
+            <Route index element={<AdminPage />} />
+            <Route path="create-problem" element={<CreateProblemPage />} />
+            <Route path="create-sheet" element={<CreateSheetPage />} />
+            <Route path="users" element={<UsersPage />} />
+            <Route path="sheets" element={<SheetsPage />} />
+            <Route path="problems" element={<AdminProblemsPage />} />
+            <Route path="playlists" element={<AdminPlaylistsPage />} />
+            <Route path="submissions" element={<SubmissionsPage />} />
+          </Route>
         </Route>
 
-        <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
-        <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to="/" />} />
-        <Route path="/problem/:id" element={authUser ? <ProblemDetailsPage /> : <Navigate to="/login" />} />
-        <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
-
-        <Route element={<AdminRoute />}>
-          <Route path="/add-problem" element={authUser ? <AddProblemPage /> : <Navigate to="/" />} />
-        </Route>
+        <Route path="/problems/:problemId" element={<ProblemPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );
-};
+}
 
 export default App;

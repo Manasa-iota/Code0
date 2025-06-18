@@ -1,69 +1,127 @@
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import React from 'react'
-import {useForm} from "react-hook-form";
-import {X} from "lucide-react";
-const CreatePlaylistModal = ({isOpen , onClose , onSubmit}) => {
-    const {register , handleSubmit , formState:{errors} , reset} = useForm();
+import { createPlaylistSchema } from "../utils/zod-schema";
+import { useCreatePlaylistMutation } from "../querys/usePlaylistQuery";
+import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
-    const handleFormSubmit = async (data)=>{
-        await onSubmit(data);
-        reset()
-        onClose()
+const CreatePlaylistModal = () => {
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(createPlaylistSchema),
+  });
+
+  const mutation = useCreatePlaylistMutation();
+  const errorMessage =
+    mutation?.error?.response?.data.message ||
+    mutation?.error?.message ||
+    "Inernal server error";
+
+  const onSubmit = (data) => {
+    mutation.mutate(data);
+  };
+
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      reset();
+      document.getElementById("create-playlist-modal").close();
     }
-
-    if(!isOpen) return null;
+  }, [mutation.isSuccess, reset]);
 
   return (
-   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-base-100 rounded-lg shadow-xl w-full max-w-md">
-        <div className="flex justify-between items-center p-4 border-b border-base-300">
-          <h3 className="text-xl font-bold">Create New Playlist</h3>
-          <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="p-6 space-y-4">
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-medium">Playlist Name</span>
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              placeholder="Enter playlist name"
-              {...register('name', { required: 'Playlist name is required' })}
-            />
-            {errors.name && (
-              <label className="label">
-                <span className="label-text-alt text-error">{errors.name.message}</span>
+    <div>
+      <dialog id="create-playlist-modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg mb-4">Create Playlist</h3>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            method="dialog"
+            className="space-y-8"
+          >
+            <div className="form-control mb-4">
+              <label htmlFor="playlist-name" className="label">
+                <span className="label-text mb-2">Name</span>
               </label>
+              <input
+                {...register("name")}
+                id="playlist-name"
+                type="text"
+                name="name"
+                placeholder="Enter playlist name"
+                className="input input-bordered w-full"
+                maxLength={30}
+                required
+              />
+            </div>
+            <div className="form-control mb-4">
+              <label htmlFor="playlist-desc" className="label">
+                <span className="label-text mb-2">Description</span>
+              </label>
+              <div className="w-full">
+                <textarea
+                  {...register("description")}
+                  id="playlist-desc"
+                  name="description"
+                  className="textarea w-full"
+                  placeholder="Enter playlist description"
+                ></textarea>
+              </div>
+            </div>
+            {errors && (
+              <div>
+                <p className="text-red-500 w-[80%]">
+                  {errors?.name
+                    ? errors.name?.message
+                    : errors.description && errors.description?.message}
+                  {mutation.isError && errorMessage}
+                </p>
+              </div>
             )}
-          </div>
+            <div className="modal-action">
+              <button
+                type="button"
+                className="btn"
+                onClick={() =>
+                  document.getElementById("create-playlist-modal").close()
+                }
+              >
+                Cancel
+              </button>
 
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-medium">Description</span>
-            </label>
-            <textarea
-              className="textarea textarea-bordered h-24"
-              placeholder="Enter playlist description"
-              {...register('description')}
-            />
-          </div>
-
-          <div className="flex justify-end gap-2 mt-6">
-            <button type="button" onClick={onClose} className="btn btn-ghost">
-              Cancel
-            </button>
-            <button type="submit" className="btn btn-primary">
-              Create Playlist
-            </button>
-          </div>
-        </form>
-      </div>
+              <button
+                disabled={mutation.isPending}
+                type="submit"
+                className="btn btn-primary"
+              >
+                {mutation.isPending ? (
+                  <>
+                    <Loader2 size="18" /> <span>Loading...</span>
+                  </>
+                ) : (
+                  "Create"
+                )}
+              </button>
+              <button
+                onClick={() =>
+                  document.getElementById("create-playlist-modal").close()
+                }
+                type="button"
+                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              >
+                ✕
+              </button>
+            </div>
+          </form>
+        </div>
+      </dialog>
     </div>
-  )
-}
+  );
+};
 
-export default CreatePlaylistModal
+export default CreatePlaylistModal;

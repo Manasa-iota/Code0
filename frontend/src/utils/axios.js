@@ -24,9 +24,9 @@ axiosClient.interceptors.response.use(
   (res) => res,
   (err) => {
     const originalReq = err.config;
-
     if (
       err.response?.status === 401 &&
+      err.response?.data?.message?.toLowerCase().includes("token has expired") && 
       !originalReq._retry
     ) {
       if (isRefreshing) {

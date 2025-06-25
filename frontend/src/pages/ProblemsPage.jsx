@@ -55,13 +55,34 @@ const ProblemsPage = () => {
         <AlllSheets />
         <ProblemsHeader companies={companies} tags={tags} />
 
-        <div className="overflow-x-auto">
+      <div className="overflow-x-auto">
+        <table className="table w-full">
           {isFetching ? (
-            <tr className="flex items-center justify-center w-full">
-              <td className="loading loading-ring loading-xl"></td>
-            </tr>
+            <tbody>
+              <tr>
+                <td colSpan="7" className="text-center py-4">
+                  <span className="loading loading-ring loading-xl" />
+                </td>
+              </tr>
+            </tbody>
+          ) : isError ? (
+            <tbody className="w-full text-center font-bold text-2xl">
+              <tr>
+                <td colSpan="7">
+                  {error?.response?.data?.message || "Error fetching problems"}
+                </td>
+              </tr>
+            </tbody>
+          ) : problems.length === 0 ? (
+            <tbody>
+              <tr>
+                <td colSpan="7" className="text-center">
+                  <h1>No Problems Found!</h1>
+                </td>
+              </tr>
+            </tbody>
           ) : (
-            <table className="table">
+            <>
               <thead>
                 <tr>
                   <th>Status</th>
@@ -73,96 +94,81 @@ const ProblemsPage = () => {
                   <th>Actions</th>
                 </tr>
               </thead>
+              <tbody>
+                {problems.map((problem, idx) => {
+                  const isSolved = problem.solvedBy?.some(
+                    (p) => p.userId === user?.user?.id
+                  );
 
-              {isError ? (
-                <tbody className="w-full text-center font-bold text-2xl">
-                  <tr>
-                    <td>{error?.response?.data?.message || "Error fetching problems"}</td>
-                  </tr>
-                </tbody>
-              ) : (
-                <tbody>
-                  {problems.length === 0 ? (
-                    <tr>
-                      <td colSpan="7">
-                        <h1>No Problems Found!</h1>
+                  return (
+                    <tr key={problem.id} className={idx % 2 === 0 ? "bg-base-200" : ""}>
+                      <td className="w-8">
+                        {isSolved ? (
+                          <CircleCheckBig size="18" className="text-success" />
+                        ) : (
+                          <Circle size="18" />
+                        )}
+                      </td>
+
+                      <td className="font-medium relative">
+                        {problem.isDemo && (
+                          <span className="absolute top-1 -left-3 badge badge-sm badge-primary">
+                            Demo
+                          </span>
+                        )}
+                        <Link to={`/problems/${problem.id}`} className="hover:underline">
+                          <span className="line-clamp-2 break-words max-w-xs">
+                            {idx + 1}. {problem.title}
+                          </span>
+                        </Link>
+                      </td>
+
+                      <td className={`capitalize ${
+                        problem.difficulty === "EASY"
+                          ? "text-success"
+                          : problem.difficulty === "MEDIUM"
+                          ? "text-warning"
+                          : "text-error"
+                      }`}>
+                        <span>{problem.difficulty}</span>
+                      </td>
+
+                      <td>{problem.company?.[0]}</td>
+
+                      <td className="space-x-1">
+                        {problem.tags.slice(0, 2).map((tag, i) => (
+                          <span key={i} className="badge">{tag}</span>
+                        ))}
+                      </td>
+
+                      <td className="text-left">{getAcceptanceRate(problem)}</td>
+
+                      <td>
+                        <div className="dropdown dropdown-bottom dropdown-end">
+                          <button tabIndex={0} className="btn btn-sm md:btn">
+                            <Ellipsis size="18" />
+                          </button>
+                          <ul
+                            tabIndex={0}
+                            className="dropdown-content menu bg-base-100 rounded-box z-10 w-50 p-2 shadow-sm"
+                          >
+                            <li>
+                              <button onClick={() => handleAddProblemInPlaylist(problem.id)}>
+                                Add to playlist
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
                       </td>
                     </tr>
-                  ) : (
-                    problems.map((problem, idx) => {
-                      const isSolved = problem.solvedBy?.some(
-                        (p) => p.userId === user?.user?.id
-                      );
-
-                      return (
-                        <tr key={problem.id} className={idx % 2 === 0 ? "bg-base-200" : ""}>
-                          <td className="w-8">
-                            {isSolved ? (
-                              <CircleCheckBig size="18" className="text-success" />
-                            ) : (
-                              <Circle size="18" />
-                            )}
-                          </td>
-
-                          <td className="font-medium relative">
-                            {problem.isDemo && (
-                              <span className="absolute top-1 -left-3 badge badge-sm badge-primary">
-                                Demo
-                              </span>
-                            )}
-                            <Link to={`/problems/${problem.id}`} className="hover:underline">
-                              <span className="line-clamp-2 break-words max-w-xs">
-                                {idx + 1}. {problem.title}
-                              </span>
-                            </Link>
-                          </td>
-
-                          <td className={`capitalize ${
-                            problem.difficulty === "EASY"
-                              ? "text-success"
-                              : problem.difficulty === "MEDIUM"
-                              ? "text-warning"
-                              : "text-error"
-                          }`}>
-                            <span>{problem.difficulty}</span>
-                          </td>
-
-                          <td>{problem.company?.[0]}</td>
-
-                          <td className="space-x-1">
-                            {problem.tags.slice(0, 2).map((tag, i) => (
-                              <span key={i} className="badge">{tag}</span>
-                            ))}
-                          </td>
-
-                          <td className="text-left">{getAcceptanceRate(problem)}</td>
-
-                          <td>
-                            <div className="dropdown dropdown-bottom dropdown-end">
-                              <button tabIndex={0} className="btn btn-sm md:btn">
-                                <Ellipsis size="18" />
-                              </button>
-                              <ul
-                                tabIndex={0}
-                                className="dropdown-content menu bg-base-100 rounded-box z-10 w-50 p-2 shadow-sm"
-                              >
-                                <li>
-                                  <button onClick={() => handleAddProblemInPlaylist(problem.id)}>
-                                    Add to playlist
-                                  </button>
-                                </li>
-                              </ul>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              )}
-            </table>
+                  );
+                })}
+              </tbody>
+            </>
           )}
-        </div>
+        </table>
+      </div>
+
       </div>
     </div>
   );
